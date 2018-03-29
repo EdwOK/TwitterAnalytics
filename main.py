@@ -1,15 +1,17 @@
 import os
 import pickle
 import re
+import string
 import sys
-import tweepy
-
 from operator import itemgetter
 
+import tweepy
+from nltk.corpus import stopwords
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import SGDClassifier
+from sklearn.pipeline import Pipeline
 
 # twitter oauth
 consumer_key = 'VKMM5yC9Zx4BMpmNsPV5k4zWa'
@@ -21,8 +23,6 @@ owner_id = '2659409383'
 
 
 def load_user_tweets(user_name):
-    load_tweets = []
-
     with open('%s.pickle' % user_name, 'rb') as in_file:
         load_tweets = pickle.load(in_file)
 
@@ -84,8 +84,6 @@ def process_tweets(user_tweets):
 
 
 def main(user_name):
-    user_tweets = []
-
     if os.path.exists('%s.pickle' % user_name):
         user_tweets = load_user_tweets(user_name=user_name)
     else:
@@ -105,17 +103,16 @@ def main(user_name):
     processed_tweets = process_tweets(user_tweets=user_tweets)
     newsgroups = fetch_20newsgroups(subset='all', data_home='.')
 
-    count_vectorizer = CountVectorizer(stop_words='english')
-    x_train_counts = count_vectorizer.fit_transform(newsgroups.data)
+    text_clf = Pipeline([
+        ('vect', CountVectorizer(stop_words=stopwords.words('english') + list(string.punctuation))),
+        ('tfidf', TfidfTransformer()),
+        ('clf', SGDClassifier())
+    ])
 
-    t_fid_transformer = TfidfTransformer()
-    x_train_t_fidf = t_fid_transformer.fit_transform(x_train_counts)
+    text_clf = text_clf.fit(newsgroups.data, newsgroups.target)
+    prediction = text_clf.predict(processed_tweets)
 
-    model = MultinomialNB().fit(x_train_t_fidf, newsgroups.target)
-
-    x_new_counts = count_vectorizer.transform(processed_tweets)
-    x_new_t_fidf = t_fid_transformer.transform(x_new_counts)
-    prediction = model.predict(x_new_t_fidf)
+    print('Finish training ...')
 
     top_categories = {}
 
