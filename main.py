@@ -1,12 +1,10 @@
 import os
 import pickle
 import re
-import string
 import sys
 from operator import itemgetter
 
 import tweepy
-from nltk.corpus import stopwords
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -104,9 +102,9 @@ def main(user_name):
     newsgroups = fetch_20newsgroups(subset='all', data_home='.')
 
     text_clf = Pipeline([
-        ('vect', CountVectorizer(stop_words=stopwords.words('english') + list(string.punctuation))),
+        ('vect', CountVectorizer(stop_words='english')),
         ('tfidf', TfidfTransformer()),
-        ('clf', SGDClassifier())
+        ('clf', SGDClassifier(max_iter=10))
     ])
 
     text_clf = text_clf.fit(newsgroups.data, newsgroups.target)
