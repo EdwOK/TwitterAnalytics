@@ -1,2 +1,2 @@
 # TwitterAnalytics
-Semantic analytics of a account from the twitter
+Semantic analytics accounts from Twitter
