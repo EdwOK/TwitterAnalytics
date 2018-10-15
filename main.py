@@ -12,12 +12,12 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
 
 # twitter oauth
-consumer_key = 'VKMM5yC9Zx4BMpmNsPV5k4zWa'
-consumer_secret = 'XbQxdowKkJWPvOgDZ7CG1wpsTu3EodLivSeoYdyRkpvGxvfmwF'
-access_token = '2659409383-A4K230d0DsJYo9PmQCePQZX0sFqWNyzPHNrZwUm'
-access_token_secret = 'VpABCHBKu2FmCdvQEiDvSIDTLFx4OZ1P8AYysvTHIZ0Qs'
-owner = 'edw_okay'
-owner_id = '2659409383'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = 's'
+owner = ''
+owner_id = ''
 
 
 def load_user_tweets(user_name):
